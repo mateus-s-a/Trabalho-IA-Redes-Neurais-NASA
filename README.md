@@ -28,7 +28,7 @@ A tabela cumulativa foi construída para reunir as disposições mais atuais e c
 
 A versão do arquivo utilizada neste projeto foi baixada da tabela `cumulative` do Exoplanet Archive via TAP e, após inspeção local, apresenta as seguintes características:
 
-- **Arquivo:** `kepler_koi_cumulative.csv`
+- **Arquivo:** [`kepler_koi_cumulative.csv`](docs/kepler_koi_cumulative.csv)
 - **Linhas:** 9.564 registros
 - **Colunas:** 153 atributos
 - **Atributos numéricos:** 133
