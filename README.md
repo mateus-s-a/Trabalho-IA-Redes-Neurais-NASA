@@ -4,15 +4,15 @@
 
 Este repositório reúne o desenvolvimento do trabalho prático da disciplina de Inteligência Artificial, com foco em aprendizado supervisionado e redes neurais aplicadas a uma base pública da NASA. O projeto utiliza o conjunto **Kepler Objects of Interest (KOI)** para investigar um problema real de classificação a partir de dados astronômicos observacionais. [NASA Open Data Portal](https://data.nasa.gov/dataset/kepler-objects-of-interest-koi) [NASA Exoplanet Archive](https://exoplanetarchive.ipac.caltech.edu/docs/Kepler_KOI_docs.html)
 
-A proposta central é construir, treinar e avaliar modelos de classificação, com ênfase em uma rede neural do tipo **MLP (Multi-layer Perceptron)**, comparando seu desempenho com pelo menos um modelo baseline mais simples. O experimento será implementado em **Google Colab**, com análise crítica dos resultados e relação com aplicações de Engenharia. [Slides de Aprendizado de Máquina](https://page.gensparksite.com/get_upload_url/89b66972225152d69f20c4e41ac153431cea47cbf574508a080fb186f012bf13/default/a2fe2d4f-2f18-488b-aab0-c56475e664e7)
+A proposta central foi construir, treinar e avaliar modelos de classificação, com ênfase em uma rede neural do tipo **MLP (Multi-layer Perceptron)** implementada com o `MLPClassifier` do **Scikit-Learn**, comparando seu desempenho com um modelo baseline de **Regressão Logística**. O experimento foi desenvolvido em notebooks Jupyter compatíveis com **Google Colab**, com análise crítica dos resultados e relação com aplicações de Engenharia.
 
 ---
 
 ## Objetivo
 
-O objetivo deste projeto é aplicar conceitos de aprendizado de máquina e redes neurais para resolver um problema de classificação supervisionada usando a base KOI. O recorte inicial adotado neste repositório é a classificação binária com base em `koi_pdisposition`, que no arquivo baixado aparece com as classes **CANDIDATE** e **FALSE POSITIVE**. O dataset completo também contém a coluna `koi_disposition`, que apresenta três estados no arquivo atual: **FALSE POSITIVE**, **CONFIRMED** e **CANDIDATE**. [NASA Exoplanet Archive](https://exoplanetarchive.ipac.caltech.edu/docs/PurposeOfKOITable.html)
+O objetivo deste projeto é aplicar conceitos de aprendizado de máquina e redes neurais para resolver um problema de classificação supervisionada usando a base KOI. O recorte adotado é a **classificação binária** com base em `koi_pdisposition`, com as classes **CANDIDATE** e **FALSE POSITIVE**. O dataset completo também contém a coluna `koi_disposition`, que apresenta três estados: **FALSE POSITIVE**, **CONFIRMED** e **CANDIDATE**. [NASA Exoplanet Archive](https://exoplanetarchive.ipac.caltech.edu/docs/PurposeOfKOITable.html)
 
-Em termos de trabalho acadêmico, o projeto busca documentar todo o ciclo: compreensão da base, pré-processamento, seleção de atributos, divisão entre treino/validação/teste, treinamento dos modelos, avaliação por métricas e interpretação dos resultados no contexto de aplicações reais. [Slides de Aprendizado de Máquina](https://page.gensparksite.com/get_upload_url/89b66972225152d69f20c4e41ac153431cea47cbf574508a080fb186f012bf13/default/a2fe2d4f-2f18-488b-aab0-c56475e664e7)
+O projeto documenta todo o ciclo: compreensão da base, pré-processamento, seleção de atributos, divisão entre treino/validação/teste, treinamento dos modelos, avaliação por métricas e interpretação dos resultados no contexto de aplicações reais. [Slides de Aprendizado de Máquina](docs/Slides-Aprendizado-Maquina.pdf)
 
 ---
 
@@ -20,48 +20,56 @@ Em termos de trabalho acadêmico, o projeto busca documentar todo o ciclo: compr
 
 O conjunto KOI é publicado pela NASA e mantido pelo **MAST Archive**. Ele reúne alvos observados pela missão **Kepler** que foram sinalizados como possíveis candidatos a exoplanetas, mas que podem incluir também falsos positivos decorrentes de artefatos instrumentais ou outros fenômenos astrofísicos. [NASA Open Data Portal](https://data.nasa.gov/dataset/kepler-objects-of-interest-koi) [NASA Exoplanet Archive](https://exoplanetarchive.ipac.caltech.edu/docs/Kepler_KOI_docs.html)
 
-A documentação oficial destaca que a tabela **Cumulative** é a forma mais prática de trabalhar com os resultados atuais, pois consolida em um único lugar um superconjunto de KOIs vindos de diferentes quarters da missão. Por isso, ela é especialmente adequada para projetos acadêmicos e experimentos em Google Colab. [NASA Exoplanet Archive](https://exoplanetarchive.ipac.caltech.edu/docs/Kepler_KOI_docs.html)
-
-A tabela cumulativa foi construída para reunir as disposições mais atuais e consistentes dos KOIs, com ênfase em estados como **CANDIDATE** e **FALSE POSITIVE**. A própria documentação informa que a tabela agrega resultados de diferentes tabelas de atividade e funciona como um catálogo consolidado de “best-knowledge” para os KOIs. [NASA Exoplanet Archive](https://exoplanetarchive.ipac.caltech.edu/docs/PurposeOfKOITable.html)
+A tabela **Cumulative** consolida em um único lugar um superconjunto de KOIs vindos de diferentes quarters da missão. Por isso, ela é especialmente adequada para projetos acadêmicos e experimentos reprodutíveis. [NASA Exoplanet Archive](https://exoplanetarchive.ipac.caltech.edu/docs/Kepler_KOI_docs.html)
 
 ### Resumo validado do arquivo baixado
 
-A versão do arquivo utilizada neste projeto foi baixada da tabela `cumulative` do Exoplanet Archive via TAP e, após inspeção local, apresenta as seguintes características:
+A versão do arquivo utilizada neste projeto foi baixada da tabela `cumulative` do Exoplanet Archive via **TAP (Table Access Protocol)**:
 
-- **Arquivo:** [`kepler_koi_cumulative.csv`](docs/kepler_koi_cumulative.csv)
 - **Linhas:** 9.564 registros
-- **Colunas:** 153 atributos
-- **Atributos numéricos:** 133
-- **Atributos não numéricos:** 20
-- **Coluna-alvo binária viável:** `koi_pdisposition`
-- **Coluna-alvo multiclasses possível:** `koi_disposition`
+- **Colunas originais:** 153 atributos
+- **Colunas após pré-processamento:** 108 features (removidas colunas com >50% de nulos e metadados)
+- **Coluna-alvo:** `koi_pdisposition`
 
-Validação feita diretamente sobre o CSV baixado para este repositório.
-
-### Distribuição das classes observada no arquivo
+### Distribuição das classes
 
 #### `koi_pdisposition`
 - `FALSE POSITIVE`: 4.847
 - `CANDIDATE`: 4.717
 
-#### `koi_disposition`
-- `FALSE POSITIVE`: 4.839
-- `CONFIRMED`: 2.747
-- `CANDIDATE`: 1.978
+O dataset é **bem balanceado**, não exigindo técnicas de oversampling para o treinamento.
 
-Esses números mostram que o dataset permite tanto um problema **binário** quanto uma extensão **multiclasse**, sendo o cenário binário o mais indicado para a primeira versão do trabalho por simplicidade metodológica e melhor controle experimental.
+### Observações sobre pré-processamento
 
-### Observações importantes para pré-processamento
-
-A inspeção do arquivo mostra que algumas colunas apresentam ausência total de dados na versão atual do CSV, como `koi_gmag_err`, `koi_imag_err`, `koi_zmag_err`, `koi_rmag_err`, `koi_kepmag_err`, além de certos atributos derivados e respectivos erros. Isso indica que a etapa de limpeza e seleção de atributos será essencial antes do treinamento dos modelos.
+Algumas colunas apresentavam ausência total de dados na versão do CSV, como `koi_gmag_err`, `koi_imag_err`, `koi_zmag_err`, `koi_rmag_err`, `koi_kepmag_err`, além de atributos derivados e erros associados. Todas as colunas com mais de 50% de valores nulos foram removidas. Os nulos remanescentes foram imputados pela **mediana**.
 
 ---
 
-## Abordagem inicial do problema
+## Abordagem adotada
 
-A abordagem inicial adotada neste projeto será a classificação supervisionada binária para prever a disposição planetária usando `koi_pdisposition`. A ideia é transformar os atributos físicos e observacionais dos KOIs em variáveis de entrada para um modelo de classificação e verificar se uma rede neural consegue distinguir adequadamente objetos classificados como **CANDIDATE** e **FALSE POSITIVE**.
+O projeto implementou a classificação supervisionada binária para prever `koi_pdisposition`. O pipeline completo foi:
 
-Como baseline, será utilizado pelo menos um modelo mais simples, como Regressão Logística ou Perceptron, para comparação com a rede neural MLP. Depois disso, serão avaliadas métricas como acurácia, precisão, recall, F1-score, matriz de confusão e, se aplicável, curva ROC/AUC. Esse fluxo está diretamente alinhado ao conteúdo da disciplina sobre aprendizado supervisionado, treino/teste/validação e avaliação de desempenho. [Slides de Aprendizado de Máquina](https://page.gensparksite.com/get_upload_url/89b66972225152d69f20c4e41ac153431cea47cbf574508a080fb186f012bf13/default/a2fe2d4f-2f18-488b-aab0-c56475e664e7)
+1. **Carga programática via TAP** (sem dependência de arquivo local)
+2. **Limpeza e seleção de features** (remoção de IDs, metadados e colunas com >50% nulos)
+3. **Label Encoding** do alvo (`CANDIDATE` → 0, `FALSE POSITIVE` → 1)
+4. **Imputação pela mediana** dos valores ausentes restantes
+5. **Split estratificado** 70% Treino / 15% Validação / 15% Teste
+6. **Padronização** com `StandardScaler`
+7. **Baseline** com Regressão Logística (Acurácia: **93,45%**)
+8. **MLP v1** com 100 neurônios, ReLU, Adam (Acurácia: **98,33%**)
+9. **Refinamento** com 3 configurações adicionais — melhor resultado com Alpha=0.01 (Acurácia: **98,40%**)
+
+### Resultados obtidos
+
+| Modelo | Acurácia (Validação) | Configuração |
+| :--- | :---: | :--- |
+| Baseline (Regressão Logística) | 93,45% | N/A |
+| MLP v1 | 98,33% | (100,) ReLU, Adam |
+| Exp A — Profunda | 95,82% | (100, 50) |
+| Exp B — Larga | 96,59% | (200,) |
+| **Exp C — Regularizada** ⭐ | **98,40%** | **(100,) Alpha=0.01** |
+
+O **Experimento C** foi selecionado como modelo final por apresentar a maior acurácia com regularização L2 que reduz o risco de overfitting.
 
 ---
 
@@ -70,118 +78,98 @@ Como baseline, será utilizado pelo menos um modelo mais simples, como Regressã
 ```text
 Trabalho-IA-Redes-Neurais-NASA/
 ├── README.md
+├── requirements.txt
+├── .cursorrules
 ├── data/
-│   └── kepler_koi_cumulative.csv
+│   └── (dataset carregado programaticamente via TAP)
 ├── notebooks/
-│   ├── 01_eda_koi.ipynb
-│   ├── 02_preprocessamento_modelagem.ipynb
-│   └── 03_trabalho_final.ipynb
+│   ├── 01_eda_koi.ipynb               ← EDA e diagnóstico dos dados
+│   └── 02_preprocessamento_modelagem.ipynb  ← Pipeline + Baseline + MLP + Refinamento
 ├── figures/
-│   ├── matriz_confusao.png
-│   ├── roc_curve.png
-│   └── comparacao_modelos.png
+│   └── (gráficos gerados durante avaliação)
 └── docs/
-    └── planejamento.md
+    ├── Enunciado.md
+    └── Slides-Aprendizado-Maquina.pdf
 ```
 
 ### Função de cada pasta
 
-- **data/**: armazenamento do dataset bruto ou versões tratadas.
-- **notebooks/**: notebooks usados para EDA, modelagem e versão final do trabalho.
-- **figures/**: gráficos e imagens gerados durante análise e avaliação.
-- **docs/**: planejamento, anotações metodológicas e apoio à escrita.
+- **data/**: reservada para armazenamento local do dataset, se necessário. O carregamento padrão é feito via TAP.
+- **notebooks/**: contém os notebooks executáveis com todo o pipeline do projeto.
+- **figures/**: destino dos gráficos gerados (Matriz de Confusão, Curva ROC, etc.).
+- **docs/**: enunciado do trabalho e slides da disciplina.
 
 ---
 
 ## Tecnologias utilizadas
 
-Este projeto deverá utilizar principalmente as seguintes tecnologias:
+As seguintes tecnologias foram efetivamente utilizadas no projeto:
 
-- **Python 3**
-- **Google Colab**
-- **Pandas** para manipulação tabular
-- **NumPy** para operações numéricas
-- **Matplotlib** e **Seaborn** para visualização
-- **Scikit-learn** para pré-processamento, baseline e avaliação
-- **MLPClassifier** do Scikit-learn ou, alternativamente, **TensorFlow/Keras** para rede neural
+- **Python 3.12**
+- **Jupyter Notebooks** (compatível com Google Colab)
+- **Pandas 3.0** — manipulação e limpeza tabular
+- **NumPy 2.4** — operações numéricas e imputação
+- **Matplotlib 3.10** e **Seaborn 0.13** — visualizações e gráficos
+- **Scikit-learn 1.8** — pré-processamento (`StandardScaler`, `LabelEncoder`), baseline (`LogisticRegression`), rede neural (`MLPClassifier`) e métricas
 
-A escolha dessas bibliotecas está alinhada ao enunciado do trabalho, que recomenda o uso de ferramentas modernas como Scikit-learn, TensorFlow ou Keras para implementação de redes neurais e avaliação de modelos.
+> **Nota:** O projeto utiliza exclusivamente o `MLPClassifier` do Scikit-Learn para a rede neural MLP. TensorFlow/Keras não foram utilizados.
 
 ---
 
-## Instruções para execução no Google Colab
+## Como executar
 
-### Opção 1: usar o arquivo já salvo no projeto
+### Pré-requisitos (execução local)
 
-1. Envie o arquivo `kepler_koi_cumulative.csv` para a pasta `data/` do repositório.
-2. Abra o notebook no Google Colab.
-3. Garanta que o caminho do CSV esteja correto.
-4. Execute as células na ordem do notebook.
+```bash
+# Ativar o ambiente virtual
+source .venv/bin/activate
 
-Exemplo de leitura com `pandas`:
-
-```python
-import pandas as pd
-
-df = pd.read_csv('/content/kepler_koi_cumulative.csv')
-df.head()
+# Instalar dependências
+pip install -r requirements.txt
 ```
 
-### Opção 2: usar Google Drive no Colab
+### Executar no Google Colab
 
-```python
-from google.colab import drive
-drive.mount('/content/drive')
-
-import pandas as pd
-path = '/content/drive/MyDrive/Trabalho-IA-Redes-Neurais-NASA/kepler_koi_cumulative.csv'
-df = pd.read_csv(path)
-df.head()
-```
-
-### Opção 3: baixar programaticamente da fonte oficial
-
-A documentação oficial informa que o acesso programático à tabela KOI Cumulative deve ser feito via **TAP**, já que o suporte legado de API para essa tabela foi descontinuado em 2023. [Exoplanet Archive](https://exoplanetarchive.ipac.caltech.edu/docs/program_interfaces.html)
-
-Exemplo de consulta em CSV:
+Abra o notebook desejado diretamente no Colab. Os dados são carregados automaticamente via TAP:
 
 ```python
 import pandas as pd
 
 url = 'https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+*+from+cumulative&format=csv'
 df = pd.read_csv(url)
-df.head()
 ```
+
+> A Opção 3 (TAP) é a forma padrão adotada neste projeto, garantindo acesso sempre à versão mais atualizada da tabela cumulativa.
 
 ---
 
-## Etapas previstas do projeto
+## Etapas realizadas
 
-1. Carregamento e inspeção do dataset
-2. Análise exploratória dos dados
-3. Limpeza e seleção de atributos
-4. Definição do problema binário e/ou multiclasse
-5. Separação treino/validação/teste
-6. Treinamento de baseline
-7. Treinamento da rede neural MLP
-8. Avaliação com métricas e gráficos
-9. Discussão crítica dos resultados
-10. Conclusão com aplicações em Engenharia
+1. ✅ Carregamento e inspeção do dataset (EDA — `01_eda_koi.ipynb`)
+2. ✅ Análise exploratória: distribuição de classes, diagnóstico de nulos
+3. ✅ Limpeza e seleção de atributos (108 features finais)
+4. ✅ Definição do problema binário (`koi_pdisposition`)
+5. ✅ Separação estratificada treino/validação/teste (70/15/15)
+6. ✅ Treinamento e avaliação do baseline (Regressão Logística, 93,45%)
+7. ✅ Treinamento da MLP v1 (98,33%)
+8. ✅ Refinamento com 3 configurações — modelo final com 98,40%
+9. ⬜ Avaliação visual (Matriz de Confusão, Curva ROC)
+10. ⬜ Discussão crítica e conclusão com aplicações em Engenharia
 
 ---
 
 ## Possíveis métricas de avaliação
 
-Para o cenário de classificação, serão priorizadas métricas como:
+Para o cenário de classificação, foram e serão utilizadas:
 
 - Acurácia
 - Precisão
 - Recall
 - F1-score
 - Matriz de confusão
-- Curva ROC e AUC, quando aplicável
+- Curva ROC e AUC
 
-Essas métricas estão em conformidade com o conteúdo discutido na disciplina para avaliação de modelos supervisionados de classificação. [Slides de Aprendizado de Máquina](https://page.gensparksite.com/get_upload_url/89b66972225152d69f20c4e41ac153431cea47cbf574508a080fb186f012bf13/default/a2fe2d4f-2f18-488b-aab0-c56475e664e7)
+Essas métricas estão em conformidade com o conteúdo discutido na disciplina para avaliação de modelos supervisionados de classificação. [Slides de Aprendizado de Máquina](docs/Slides-Aprendizado-Maquina.pdf)
 
 ---
 
@@ -191,13 +179,4 @@ Essas métricas estão em conformidade com o conteúdo discutido na disciplina p
 - Documentação KOI no NASA Exoplanet Archive: https://exoplanetarchive.ipac.caltech.edu/docs/Kepler_KOI_docs.html
 - Explicação sobre a tabela cumulativa e disposições: https://exoplanetarchive.ipac.caltech.edu/docs/PurposeOfKOITable.html
 - Acesso programático via TAP: https://exoplanetarchive.ipac.caltech.edu/docs/program_interfaces.html
-- Consultas prontas para TAP/API: https://exoplanetarchive.ipac.caltech.edu/docs/API_queries.html
-
----
-
-## Status inicial do projeto
-
-- Dataset KOI baixado e validado
-- Estrutura inicial do repositório em definição
-- Planejamento de issues concluído
-- Próxima etapa: EDA e definição final do pipeline de pré-processamento
+- Documentação do MLPClassifier: https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html
