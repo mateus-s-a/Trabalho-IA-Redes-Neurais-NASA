@@ -6,7 +6,7 @@ Exoplanetas são objetos difíceis de serem detectados pois combinam distância,
 
  O objetivo desse projeto é processar e analisar esses dados documentando e analisando esses dados com pré-processamento, seleção de atributos, divisão entre treino/validação/teste, treinamento dos models, avaliação por métricas e interpretação dos resultados. Através do treinamento, busca-se criar um classificador que maximize a detecção de planetas reais e minimeze os "Falsos Positivos".
 
-## Implementacao
+## Implementação
 Com a implementação realizada em Python, utilizando bibliotecas como Scikit-Learn para a rede Neural e Matplotlib/Seaborn para os gráficos de análise e avaliação
 
 ### Preparação e Limpeza de Dados
@@ -19,10 +19,10 @@ Com a implementação realizada em Python, utilizando bibliotecas como Scikit-Le
 
 4. **Escalonamento (StandardScaler):** Como o dataset possui variáveis em escalas muito diferentes, utilizamos o StandardScaler para colocar todos os dados na mesma média e desvio padrão. Sem isso, a MLP demoraria muito mais para aprender ou poderia nem convergir.
 
-### Implementação da rede neural
+### Implementação da Rede Neural
 Após a etapa de preparação e limpeza, seguimos para a estruturação e execução do modelo de Aprendizado de Máquina:
 
-5. Divisão do Dataset (Holdout):
+5. **Divisão do Dataset (Holdout):**
    
 Para garantir uma avaliação imparcial, os dados foram segmentados em três conjuntos distintos:
 
@@ -32,7 +32,7 @@ Para garantir uma avaliação imparcial, os dados foram segmentados em três con
 
 * **Teste (15%):** Reservado exclusivamente para a verificação final da capacidade de generalização do modelo em dados inéditos.
 
-6. Construção e Treinamento da MLP:
+6. **Construção e Treinamento da MLP:**
    
 Utilizando a classe MLPClassifier para instanciar a rede neural. Com base nos experimentos realizados, a configuração final selecionada foi:
 
@@ -40,7 +40,7 @@ Utilizando a classe MLPClassifier para instanciar a rede neural. Com base nos ex
 
 * **Regularização (Alpha):** Definido em 0.01 para atuar como um mecanismo de controle, evitando que o modelo "decore" ruídos do dataset (overfitting).
 
-7. Execução e Avaliação:
+7. **Execução e Avaliação:**
    
 O treinamento foi monitorado através da função de perda (loss function), que apresentou uma convergência estável ao longo de aproximadamente 70 épocas. Por fim, utilizamos o classification_report e a Matriz de Confusão para extrair métricas de precisão e revocação, garantindo que o modelo identifique corretamente tanto os candidatos a planetas quanto os alarmes falsos.
 
