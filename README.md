@@ -12,7 +12,7 @@ A proposta central foi construir, treinar e avaliar modelos de classificação, 
 
 O objetivo deste projeto é aplicar conceitos de aprendizado de máquina e redes neurais para resolver um problema de classificação supervisionada usando a base KOI. O recorte adotado é a **classificação binária** com base em `koi_pdisposition`, com as classes **CANDIDATE** e **FALSE POSITIVE**. O dataset completo também contém a coluna `koi_disposition`, que apresenta três estados: **FALSE POSITIVE**, **CONFIRMED** e **CANDIDATE**. [NASA Exoplanet Archive](https://exoplanetarchive.ipac.caltech.edu/docs/PurposeOfKOITable.html)
 
-O projeto documenta todo o ciclo: compreensão da base, pré-processamento, seleção de atributos, divisão entre treino/validação/teste, treinamento dos modelos, avaliação por métricas e interpretação dos resultados no contexto de aplicações reais. [Slides de Aprendizado de Máquina](docs/Slides-Aprendizado-Maquina.pdf)
+O projeto documenta todo o ciclo: compreensão da base, pré-processamento, seleção de atributos, divisão entre treino/validação/teste, treinamento dos modelos, avaliação por métricas e interpretação dos resultados no contexto de aplicações reais.
 
 ---
 
@@ -85,11 +85,12 @@ Trabalho-IA-Redes-Neurais-NASA/
 ├── notebooks/
 │   ├── 01_eda_koi.ipynb               ← EDA e diagnóstico dos dados
 │   └── 02_preprocessamento_modelagem.ipynb  ← Pipeline + Baseline + MLP + Refinamento
+    └── 03_demo_classificador.ipynb ← Demonstração Iterativa
 ├── figures/
 │   └── (gráficos gerados durante avaliação)
 └── docs/
     ├── Enunciado.md
-    └── Slides-Aprendizado-Maquina.pdf
+    └── Relatorio.md
 ```
 
 ### Função de cada pasta
@@ -153,8 +154,8 @@ df = pd.read_csv(url)
 6. ✅ Treinamento e avaliação do baseline (Regressão Logística, 93,45%)
 7. ✅ Treinamento da MLP v1 (98,33%)
 8. ✅ Refinamento com 3 configurações — modelo final com 98,40%
-9. ⬜ Avaliação visual (Matriz de Confusão, Curva ROC)
-10. ⬜ Discussão crítica e conclusão com aplicações em Engenharia
+9. ✅ Avaliação visual (Matriz de Confusão, Curva ROC)
+10. ✅ Discussão crítica e conclusão com aplicações em Engenharia
 
 ---
 
