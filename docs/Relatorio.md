@@ -13,7 +13,8 @@ Com a implementação realizada em Python, utilizando bibliotecas como Scikit-Le
 
 1. **Tratamento de Valores Ausentes (NaN):** Identificação de colunas com excesso de valores nulos que poderiam comprometer o aprendizado. Foi aplicada a remoção de linhas ou colunas vazias para evitar que o modelo tentasse "adivinhar" informações inexistentes.
 
-```# Definindo o alvo
+```py
+# Definindo o alvo
 target = 'koi_pdisposition'  # Define a coluna alvo da classificação
 
 # Colunas para remover (IDs e metadados irrelevantes para treinamento)
@@ -38,7 +39,7 @@ print(f"Novo formato: {df.shape}")  # Retorna (linhas, colunas) do dataframe
 
 3. **Codificação de Rótulos (Label Encoding):** A coluna alvo (target) continha textos como CANDIDATE e FALSE POSITIVE, essas categorias foram transformadas em números (0 e 1) para que a rede neural pudesse processar os cálculos matemáticos. 
 
-```
+```py
 # Encoding do alvo
 le = LabelEncoder()  # Cria codificador de rótulos categóricos
 df[target] = le.fit_transform(df[target])  # Aprende e transforma rótulos CANDIDATE/FALSE POSITIVE → 0/1
@@ -53,7 +54,7 @@ print(f"Nulos remanescentes: {df_final.isnull().sum().sum()}")  # Soma os valore
 
 4. **Escalonamento (StandardScaler):** Como o dataset possui variáveis em escalas muito diferentes, utilizamos o StandardScaler para colocar todos os dados na mesma média e desvio padrão. Sem isso, a MLP demoraria muito mais para aprender ou poderia nem convergir.
 
-```
+```py
 scaler = StandardScaler()  # Cria o padronizador (média=0, desvio=1)
 X_train_scaled = scaler.fit_transform(X_train)  # Aprende e aplica escalonamento no treino
 X_val_scaled = scaler.transform(X_val)  # Escala validação com parâmetros do treino
@@ -75,7 +76,7 @@ Para garantir uma avaliação imparcial, os dados foram segmentados em três con
 
 * **Teste (15%):** Reservado exclusivamente para a verificação final da capacidade de generalização do modelo em dados inéditos.
 
-```
+```py
 X = df_final.drop(columns=[target])  # Remove as colunas especificadas
 y = df_final[target]  # Extrai a coluna alvo como variável dependente
 
@@ -93,7 +94,8 @@ print(f"Teste: {X_test.shape}")  # Retorna (linhas, colunas) do dataframe
 6. Regressão Logística
    
 Esta etapa estabelece um modelo de referência (baseline) usando Regressão Logística para classificação binária de exoplanetas. O objetivo é criar um ponto de comparação simples antes de aplicar redes neurais mais complexas. O modelo utiliza 108 features processadas e escalonadas para prever se um objeto é CANDIDATE (0) ou FALSE POSITIVE (1).
-```
+
+```py
 # Instanciando o modelo
 baseline = LogisticRegression(max_iter=1000, random_state=42)  # Cria modelo baseline de Regressão Logística
 baseline.fit(X_train_scaled, y_train)  # Treina a Regressão Logística com dados de treino
@@ -111,7 +113,7 @@ Utilizando a classe MLPClassifier para instanciar a rede neural. Com base nos ex
 
 * **Camadas Ocultas:** Uma camada com 100 neurônios, que demonstrou ser o tamanho ideal para a complexidade deste problema astronômico.
   
-```
+```py
 mlp_v1 = MLPClassifier(hidden_layer_sizes=(100,), max_iter=500, random_state=42, early_stopping=True)  # Cria rede MLP v1: 1 camada, 100 neurônios, ReLU, Adam
 mlp_v1.fit(X_train_scaled, y_train)  # Treina a MLP v1 com os dados de treino
 
@@ -123,7 +125,8 @@ print(f"MLP v1 treinada! Acurácia: {acc_v1:.4f} | F1: {f1_v1:.4f}")  # Exibe m�
 ```
 
 * **Regularização (Alpha):** Definido em 0.01 para atuar como um mecanismo de controle, evitando que o modelo "decore" ruídos do dataset (overfitting).
-```
+
+```py
 # Experimento A: Arquitetura Profunda (2 camadas)
 mlp_a = MLPClassifier(hidden_layer_sizes=(100, 50), max_iter=500, random_state=42, early_stopping=True)  # Cria MLP Exp A: 2 camadas (100+50 neurônios)
 mlp_a.fit(X_train_scaled, y_train)  # Treina o Exp A com dados de treino
